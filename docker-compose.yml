@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  bioinformatics:
+    build: .
+    container_name: bioinformatics-env
+    ports:
+      - "8787:8787"  # RStudio Server
+      - "8888:8888"  # Jupyter Lab
+      - "8080:8080"  # VSCode Server
+    volumes:
+      - ./workspace:/workspace
+    environment:
+      - PASSWORD=${RSTUDIO_PASSWORD:-rstudio}
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-}
+      - DISABLE_AUTH=${DISABLE_AUTH:-true}
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+  

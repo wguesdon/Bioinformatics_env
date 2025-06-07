@@ -1,0 +1,21 @@
+# Environment config with passwords
+.env
+
+# Workspace (your personal data and projects)
+workspace/*
+!workspace/.gitkeep
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.Rproj.user/
+.ipynb_checkpoints/
+
+# Data files (often large)
+*.csv
+*.xlsx
+*.rds
+*.RData
