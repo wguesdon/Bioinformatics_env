@@ -16,8 +16,9 @@ RUN apt-get update && apt-get install -y \
     nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and setuptools first
-RUN pip3 install --upgrade pip setuptools wheel --break-system-packages
+# Upgrade pip and setuptools without touching wheel
+# Use --ignore-installed to bypass system package conflicts
+RUN pip3 install --upgrade --ignore-installed pip setuptools --break-system-packages
 
 # Install Python packages in stages to avoid conflicts
 RUN pip3 install --no-cache-dir --break-system-packages \
