@@ -14,18 +14,13 @@ docker-compose up --build -d
 ```
 
 2. **Access:**
-- **RStudio**: http://localhost:8787 (user: `rstudio`, pass: see .env)
-- **Jupyter Lab**: http://localhost:8888 (token see .env)
+- **RStudio**: http://localhost:8787 (user: `rstudio`, password: set in RSTUDIO_PASSWORD)
+- **Jupyter Lab**: http://localhost:8888 (token: set in JUPYTER_TOKEN)
 - **VSCode**: http://localhost:8080
-
-Access your services at:
-  RStudio: http://localhost:8787
-  Jupyter: http://localhost:8888
-  VSCode:  http://localhost:8080
 
 ## What's Included
 
-- **R 4.3.2** with Bioconductor packages (DESeq2, edgeR, GenomicRanges, etc.)
+- **R 4.4.2** with Bioconductor packages (DESeq2, edgeR, GenomicRanges, etc.)
 - **Python 3** with data science stack (pandas, numpy, scikit-learn, etc.)
 - **RStudio Server** - Full R IDE
 - **Jupyter Lab** - Python/R notebooks
@@ -38,8 +33,6 @@ All your work is saved in the `workspace/` directory, which persists between con
 
 ## Setup on New Machine
 
-Yes, you're correct! With these files in place, setting up on a new Ubuntu machine is simple:
-
 ```bash
 # 1. Clone repository
 git clone <your-repo-url>
@@ -49,7 +42,6 @@ cd bioinformatics-docker
 mkdir -p workspace/{projects,data,notebooks,scripts,presentations}
 
 # 3. Build and start
-# docker-compose down # to stop running containers
 docker-compose build
 docker-compose up -d
 
@@ -88,7 +80,16 @@ For production use, edit the `.env` file to set secure passwords:
 
 ```bash
 cp .env.example .env
-nano .env  # Set your passwords
+nano .env  # Set your passwords and tokens
+```
+
+Required environment variables:
+- `RSTUDIO_PASSWORD`: Password for RStudio Server
+- `JUPYTER_TOKEN`: Token for Jupyter Lab access
+- `DISABLE_AUTH`: Set to "false" to enable authentication
+
+After setting up the .env file:
+```bash
 docker-compose up --build -d
 ```
 
@@ -96,10 +97,15 @@ docker-compose up --build -d
 
 ```bash
 bioinformatics-docker/
-├── Dockerfile              # Docker image definition (updated version)
-├── docker-compose.yml      # Service configuration with named volumes
+├── Dockerfile              # Docker image definition
+├── docker-compose.yml      # Service configuration
 ├── startup_proper.sh       # Container startup script
-├── README.md               # Project documentation
-├── Installation_guide.md   # Detailed setup instructions
-└── verify_setup.sh         # Optional: Setup verification script
+├── README.md              # Project documentation
+├── QUICK_REFERENCE.md     # Quick reference guide
+├── CHANGELOG.md           # Version history
+├── Installation_guide.md  # Detailed setup instructions
+├── verify_setup.sh        # Setup verification script
+├── debug-rstudio.sh       # RStudio debugging tool
+├── deploy.sh             # Deployment script
+└── workspace/            # Your working directory
 ```

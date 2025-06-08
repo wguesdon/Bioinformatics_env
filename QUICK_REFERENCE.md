@@ -1,8 +1,8 @@
 # Quick Reference - Bioinformatics Docker Environment
 
 ## 🚀 Access URLs
-- **RStudio**: http://localhost:8787 (rstudio/rstudio)
-- **Jupyter**: http://localhost:8888
+- **RStudio**: http://localhost:8787 (user: rstudio, password: set in RSTUDIO_PASSWORD)
+- **Jupyter**: http://localhost:8888 (token: set in JUPYTER_TOKEN)
 - **VSCode**: http://localhost:8080
 
 ## 📝 Common Commands
@@ -66,9 +66,9 @@ docker exec bioinformatics-env cat /var/log/rstudio-server/rserver.log
 # Fix permissions (if needed)
 docker exec bioinformatics-env chown -R rstudio:rstudio /home/rstudio
 
-# Restart individual service
+# Restart RStudio Server
 docker exec bioinformatics-env pkill rserver
-docker exec bioinformatics-env /usr/lib/rstudio-server/bin/rserver &
+docker exec bioinformatics-env /usr/lib/rstudio-server/bin/rserver --server-daemonize=0 --server-app-armor-enabled=0 &
 ```
 
 ### Updates and Maintenance
@@ -85,6 +85,14 @@ docker stats bioinformatics-env
 ```
 
 ## 🔧 Configuration Changes
+
+### Environment Variables
+Edit `.env` file:
+```bash
+RSTUDIO_PASSWORD=your_password
+JUPYTER_TOKEN=your_token
+DISABLE_AUTH=false  # Set to true to disable authentication
+```
 
 ### Add R Package Permanently
 Edit `Dockerfile`:
@@ -118,3 +126,4 @@ docker-compose up -d
 - Use git for version control inside `/workspace/projects/`
 - Export important results outside the container
 - Regular backups of `/workspace/` are recommended
+- Keep your `.env` file secure and never commit it to version control
