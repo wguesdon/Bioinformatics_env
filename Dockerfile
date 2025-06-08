@@ -94,7 +94,6 @@ code-server --bind-addr 0.0.0.0:8080 --auth none /workspace &\n\
 echo "All services started!"\n\
 wait' > /startup.sh && chmod +x /startup.sh
 
-CMD ["/startup.sh"]
-COPY startup_fixed.sh /startup_fixed.sh
-RUN chmod +x /startup_fixed.sh
-CMD ["/startup_fixed.sh"]
+COPY startup_proper.sh /startup_proper.sh
+RUN chmod +x /startup_proper.sh
+CMD ["/startup_proper.sh"]

@@ -27,12 +27,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 50G
+          memory: 16G
         reservations:
-          memory: 25G
+          memory: 8G
     init: true
-    # Run as rstudio user
-    user: "1000:1000"
 
 volumes:
   rstudio-home:
