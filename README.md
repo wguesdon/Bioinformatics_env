@@ -19,7 +19,7 @@ docker-compose up --build -d
 - **VSCode**: http://localhost:8080
 
 Access your services at:
-  RStudio: http://localhost:8787 (rstudio/rstudio)
+  RStudio: http://localhost:8787
   Jupyter: http://localhost:8888
   VSCode:  http://localhost:8080
 
