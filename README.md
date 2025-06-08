@@ -4,7 +4,7 @@
 
 ## Quick Start
 
-### On Your Server (192.168.2.140)
+### On Your Server
 
 1. **Clone and deploy:**
 ```bash
@@ -13,10 +13,15 @@ cd Bioinformatics_env
 docker-compose up --build -d
 ```
 
-2. **Access from your laptop:**
-- **RStudio**: http://192.168.2.140:8787 (user: `rstudio`, pass: `rstudio`)
-- **Jupyter Lab**: http://192.168.2.140:8888
-- **VSCode**: http://192.168.2.140:8080
+2. **Access:**
+- **RStudio**: http://localhost:8787 (user: `rstudio`, pass: see .env)
+- **Jupyter Lab**: http://localhost:8888 (token see .env)
+- **VSCode**: http://localhost:8080
+
+Access your services at:
+  RStudio: http://localhost:8787 (rstudio/rstudio)
+  Jupyter: http://localhost:8888
+  VSCode:  http://localhost:8080
 
 ## What's Included
 
@@ -30,6 +35,28 @@ docker-compose up --build -d
 ## File Storage
 
 All your work is saved in the `workspace/` directory, which persists between container restarts.
+
+## Setup on New Machine
+
+Yes, you're correct! With these files in place, setting up on a new Ubuntu machine is simple:
+
+```bash
+# 1. Clone repository
+git clone <your-repo-url>
+cd bioinformatics-docker
+
+# 2. Create workspace
+mkdir -p workspace/{projects,data,notebooks,scripts,presentations}
+
+# 3. Build and start
+# docker-compose down # to stop running containers
+docker-compose build
+docker-compose up -d
+
+# 4. Verify (optional)
+chmod +x verify_setup.sh
+./verify_setup.sh
+```
 
 ## Management
 
@@ -63,4 +90,16 @@ For production use, edit the `.env` file to set secure passwords:
 cp .env.example .env
 nano .env  # Set your passwords
 docker-compose up --build -d
+```
+
+## Repository Structure
+
+```bash
+bioinformatics-docker/
+├── Dockerfile              # Docker image definition (updated version)
+├── docker-compose.yml      # Service configuration with named volumes
+├── startup_proper.sh       # Container startup script
+├── README.md               # Project documentation
+├── Installation_guide.md   # Detailed setup instructions
+└── verify_setup.sh         # Optional: Setup verification script
 ```
