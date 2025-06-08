@@ -35,8 +35,8 @@ All your work is saved in the `workspace/` directory, which persists between con
 
 ```bash
 # 1. Clone repository
-git clone <your-repo-url>
-cd bioinformatics-docker
+git clone git@github.com:wguesdon/Bioinformatics_env.git
+cd Bioinformatics_env
 
 # 2. Create workspace
 mkdir -p workspace/{projects,data,notebooks,scripts,presentations}
@@ -100,12 +100,12 @@ bioinformatics-docker/
 ├── Dockerfile              # Docker image definition
 ├── docker-compose.yml      # Service configuration
 ├── startup_proper.sh       # Container startup script
-├── README.md              # Project documentation
-├── QUICK_REFERENCE.md     # Quick reference guide
-├── CHANGELOG.md           # Version history
-├── Installation_guide.md  # Detailed setup instructions
-├── verify_setup.sh        # Setup verification script
-├── debug-rstudio.sh       # RStudio debugging tool
-├── deploy.sh             # Deployment script
-└── workspace/            # Your working directory
+├── README.md               # Project documentation
+├── QUICK_REFERENCE.md      # Quick reference guide
+├── CHANGELOG.md            # Version history
+├── Installation_guide.md   # Detailed setup instructions
+├── verify_setup.sh         # Setup verification script
+├── debug-rstudio.sh        # RStudio debugging tool
+├── deploy.sh               # Deployment script
+└── workspace/              # Your working directory
 ```

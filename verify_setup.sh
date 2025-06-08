@@ -110,7 +110,7 @@ if $all_good; then
     echo -e "${GREEN}✅ All systems operational!${NC}"
     echo ""
     echo "Access your services at:"
-    echo "  RStudio: http://localhost:8787 (rstudio/rstudio)"
+    echo "  RStudio: http://localhost:8787"
     echo "  Jupyter: http://localhost:8888"
     echo "  VSCode:  http://localhost:8080"
 else
