@@ -43,10 +43,18 @@ chown -R rstudio:rstudio /home/rstudio/.jupyter
 
 # Start RStudio Server (must be started as root)
 echo "Starting RStudio Server on port 8787..."
-/usr/lib/rstudio-server/bin/rserver \
-    --server-daemonize=0 \
-    --server-app-armor-enabled=0 \
-    --www-verify-user-agent=0 &
+if [ "$DISABLE_AUTH" = "true" ]; then
+    /usr/lib/rstudio-server/bin/rserver \
+        --server-daemonize=0 \
+        --server-app-armor-enabled=0 \
+        --www-verify-user-agent=0 \
+        --auth-none=1 &
+else
+    /usr/lib/rstudio-server/bin/rserver \
+        --server-daemonize=0 \
+        --server-app-armor-enabled=0 \
+        --www-verify-user-agent=0 &
+fi
 
 # Wait for RStudio to start
 sleep 5

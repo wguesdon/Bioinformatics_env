@@ -62,7 +62,6 @@ RUN mkdir -p /root/.jupyter \
 RUN mkdir -p /etc/rstudio \
     && echo "server-daemonize=0" > /etc/rstudio/rserver.conf \
     && echo "www-port=8787" >> /etc/rstudio/rserver.conf \
-    && echo "auth-none=1" >> /etc/rstudio/rserver.conf \
     && echo "www-frame-origin=any" >> /etc/rstudio/rserver.conf \
     && echo "server-app-armor-enabled=0" >> /etc/rstudio/rserver.conf
 
