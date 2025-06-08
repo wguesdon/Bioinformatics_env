@@ -8,9 +8,13 @@ services:
       - "8080:8080"  # VSCode Server
     volumes:
       - ./workspace:/workspace
-      - ./home:/home/rstudio  # Persist RStudio settings
+      # Use named volumes for better permission handling
+      - rstudio-home:/home/rstudio
+      - rstudio-local:/home/rstudio/.local
+      - rstudio-config:/home/rstudio/.config
+      - rstudio-lib:/var/lib/rstudio-server
     environment:
-      - PASSWORD=${RSTUDIO_PASSWORD:-rstudio}
+      - PASSWORD=rstudio
       - JUPYTER_TOKEN=${JUPYTER_TOKEN:-}
       - DISABLE_AUTH=${DISABLE_AUTH:-true}
       - USER=rstudio
@@ -19,12 +23,19 @@ services:
     restart: unless-stopped
     stdin_open: true
     tty: true
-    # Increase shared memory size (helps with browser crashes)
-    shm_size: '30gb'
-    # Add resource limits
+    shm_size: '2gb'
     deploy:
       resources:
         limits:
-          memory: 40G
+          memory: 50G
         reservations:
-          memory: 20G
+          memory: 25G
+    init: true
+    # Run as rstudio user
+    user: "1000:1000"
+
+volumes:
+  rstudio-home:
+  rstudio-local:
+  rstudio-config:
+  rstudio-lib:
