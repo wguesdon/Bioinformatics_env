@@ -24,7 +24,7 @@ chown -R root:root /var/run/rstudio-server
 
 # Set RStudio password from environment variable
 echo "Configuring RStudio password..."
-echo "rstudio:${PASSWORD:-rstudio}" | chpasswd
+echo "rstudio:${RSTUDIO_PASSWORD:-rstudio}" | chpasswd
 
 # Clean up any stale files
 rm -rf /var/run/rstudio-server/* || true
