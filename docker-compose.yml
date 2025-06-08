@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   bioinformatics:
     build: .
@@ -10,11 +8,23 @@ services:
       - "8080:8080"  # VSCode Server
     volumes:
       - ./workspace:/workspace
+      - ./home:/home/rstudio  # Persist RStudio settings
     environment:
       - PASSWORD=${RSTUDIO_PASSWORD:-rstudio}
       - JUPYTER_TOKEN=${JUPYTER_TOKEN:-}
       - DISABLE_AUTH=${DISABLE_AUTH:-true}
+      - USER=rstudio
+      - USERID=1000
+      - GROUPID=1000
     restart: unless-stopped
     stdin_open: true
     tty: true
-  
+    # Increase shared memory size (helps with browser crashes)
+    shm_size: '30gb'
+    # Add resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 40G
+        reservations:
+          memory: 20G

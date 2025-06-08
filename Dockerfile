@@ -14,10 +14,10 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev libxslt-dev \
     libcurl4-openssl-dev \
     nodejs npm \
+    gdebi-core \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and setuptools without touching wheel
-# Use --ignore-installed to bypass system package conflicts
 RUN pip3 install --upgrade --ignore-installed pip setuptools --break-system-packages
 
 # Install Python packages in stages to avoid conflicts
@@ -52,24 +52,46 @@ RUN R -e "install.packages(c('BiocManager', 'IRkernel', 'reticulate'))" \
     ))" \
     && R -e "IRkernel::installspec(user = FALSE)"
 
-# Configure services
+# Configure Jupyter
 RUN mkdir -p /root/.jupyter \
     && echo "c.ServerApp.ip = '0.0.0.0'" >> /root/.jupyter/jupyter_lab_config.py \
     && echo "c.ServerApp.allow_root = True" >> /root/.jupyter/jupyter_lab_config.py \
     && echo "c.ServerApp.open_browser = False" >> /root/.jupyter/jupyter_lab_config.py
 
-RUN echo "server-daemonize=0" >> /etc/rstudio/rserver.conf \
+# Fix RStudio Server configuration
+RUN mkdir -p /etc/rstudio \
+    && echo "server-daemonize=0" > /etc/rstudio/rserver.conf \
     && echo "www-port=8787" >> /etc/rstudio/rserver.conf \
-    && echo "auth-none=1" >> /etc/rstudio/rserver.conf
+    && echo "auth-none=1" >> /etc/rstudio/rserver.conf \
+    && echo "www-frame-origin=any" >> /etc/rstudio/rserver.conf \
+    && echo "server-app-armor-enabled=0" >> /etc/rstudio/rserver.conf
 
-# Set password for existing rstudio user
-RUN echo "rstudio:rstudio" | chpasswd
+# Create rsession.conf to prevent crashes
+RUN echo "session-timeout-minutes=0" > /etc/rstudio/rsession.conf \
+    && echo "session-disconnected-timeout-minutes=0" >> /etc/rstudio/rsession.conf \
+    && echo "session-quit-child-processes-on-exit=0" >> /etc/rstudio/rsession.conf
+
+# Set up RStudio user (already exists in rocker/verse)
+RUN usermod -s /bin/bash rstudio \
+    && echo "rstudio:rstudio" | chpasswd
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /home/rstudio/.rstudio \
+    && chown -R rstudio:rstudio /home/rstudio
 
 WORKDIR /workspace
 EXPOSE 8787 8888 8080
 
-# Start all services
-CMD /usr/lib/rstudio-server/bin/rserver --server-daemonize=0 & \
-    jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --notebook-dir=/workspace & \
-    code-server --bind-addr 0.0.0.0:8080 --auth none /workspace & \
-    wait
+# Create a startup script for better service management
+RUN echo '#!/bin/bash\n\
+echo "Starting services..."\n\
+echo "Starting RStudio Server on port 8787..."\n\
+/usr/lib/rstudio-server/bin/rserver --server-daemonize=0 --server-app-armor-enabled=0 &\n\
+echo "Starting Jupyter Lab on port 8888..."\n\
+jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --notebook-dir=/workspace &\n\
+echo "Starting VSCode on port 8080..."\n\
+code-server --bind-addr 0.0.0.0:8080 --auth none /workspace &\n\
+echo "All services started!"\n\
+wait' > /startup.sh && chmod +x /startup.sh
+
+CMD ["/startup.sh"]
