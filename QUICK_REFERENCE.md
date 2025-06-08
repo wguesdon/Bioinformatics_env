@@ -1,9 +1,9 @@
 # Quick Reference - Bioinformatics Docker Environment
 
 ## 🚀 Access URLs
-- **RStudio**: http://localhost:8787 (user: rstudio, password: set in RSTUDIO_PASSWORD)
-- **Jupyter**: http://localhost:8888 (token: set in JUPYTER_TOKEN)
-- **VSCode**: http://localhost:8080
+- **RStudio**:  http://localhost:8787 (user: rstudio, password: set in RSTUDIO_PASSWORD)
+- **Jupyter**:  http://localhost:8888 (token: set in JUPYTER_TOKEN)
+- **VSCode**:   http://localhost:8080
 
 ## 📝 Common Commands
 
