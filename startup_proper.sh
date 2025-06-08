@@ -22,6 +22,10 @@ chmod -R 755 /home/rstudio
 chown -R rstudio-server:rstudio-server /var/lib/rstudio-server 2>/dev/null || chown -R rstudio:rstudio /var/lib/rstudio-server
 chown -R root:root /var/run/rstudio-server
 
+# Set RStudio password from environment variable
+echo "Configuring RStudio password..."
+echo "rstudio:${PASSWORD:-rstudio}" | chpasswd
+
 # Clean up any stale files
 rm -rf /var/run/rstudio-server/* || true
 rm -rf /tmp/rstudio-* || true

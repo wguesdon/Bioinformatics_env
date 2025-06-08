@@ -71,8 +71,7 @@ RUN echo "session-timeout-minutes=0" > /etc/rstudio/rsession.conf \
     && echo "session-quit-child-processes-on-exit=0" >> /etc/rstudio/rsession.conf
 
 # Set up RStudio user (already exists in rocker/verse)
-RUN usermod -s /bin/bash rstudio \
-    && echo "rstudio:rstudio" | chpasswd
+RUN usermod -s /bin/bash rstudio
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /home/rstudio/.rstudio \
