@@ -14,9 +14,9 @@ services:
       - rstudio-config:/home/rstudio/.config
       - rstudio-lib:/var/lib/rstudio-server
     environment:
-      - PASSWORD=rstudio
-      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-}
-      - DISABLE_AUTH=${DISABLE_AUTH:-true}
+      - PASSWORD=${RSTUDIO_PASSWORD:-rstudio}
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-jupyter}
+      - DISABLE_AUTH=${DISABLE_AUTH:-false}
       - USER=rstudio
       - USERID=1000
       - GROUPID=1000
@@ -27,9 +27,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: 16G
+          memory: ${MEMORY_LIMIT:-45G}
         reservations:
-          memory: 8G
+          memory: ${MEMORY_RESERVATION:-16G}
     init: true
 
 volumes:
