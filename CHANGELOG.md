@@ -1,6 +1,11 @@
 # Changelog
 
-## [2.0.0] - 2025-06-08
+## [0.3.0] - 2025-06-08
+
+### Added
+- **Added more R packages**: ggpubr. rstatix, factominer, factoextra
+
+## [0.2.0] - 2025-06-08
 
 ### Fixed
 - **RStudio Server Connection Issues**: Fixed "Unable to establish connection" error
@@ -27,7 +32,7 @@
 - `user: "1000:1000"` directive from docker-compose.yml (caused permission issues)
 - Manual permission fixes no longer needed
 
-## [1.0.0] - Initial Release
+## [0.1.0] - Initial Release
 
 ### Features
 - RStudio Server with Bioconductor packages

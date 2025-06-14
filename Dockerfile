@@ -41,16 +41,52 @@ RUN curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb \
 # Install VSCode Server
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-# Install R/Bioconductor packages
-RUN R -e "install.packages(c('BiocManager', 'IRkernel', 'reticulate'))" \
-    && R -e "BiocManager::install(c( \
-        'GenomicRanges', 'GenomicFeatures', 'Biostrings', \
-        'DESeq2', 'edgeR', 'limma', 'ComplexHeatmap', \
-        'clusterProfiler', 'org.Hs.eg.db', \
-        'ggplot2', 'dplyr', 'tidyr', 'readr', \
-        'plotly', 'DT', 'pheatmap' \
-    ))" \
-    && R -e "IRkernel::installspec(user = FALSE)"
+# Install base R packages including full tidyverse
+RUN R -e "install.packages(c( \
+    'BiocManager', 'IRkernel', 'reticulate', \
+    'tidyverse', 'ggpubr', 'rstatix', 'FactoMineR', \
+    'factoextra', 'corrplot', 'GGally', \
+    'viridis', 'RColorBrewer', 'scales', \
+    'gridExtra', 'patchwork', 'cowplot', \
+    'data.table', 'janitor', 'skimr', \
+    'survival', 'survminer', 'broom', \
+    'knitr', 'rmarkdown', 'DT', 'plotly', \
+    'pheatmap', 'VennDiagram', 'UpSetR' \
+))"
+
+# Install Bioconductor core packages
+RUN R -e "BiocManager::install(c( \
+    'GenomicRanges', 'GenomicFeatures', 'Biostrings', \
+    'DESeq2', 'edgeR', 'limma', 'ComplexHeatmap', \
+    'clusterProfiler', 'org.Hs.eg.db', 'org.Mm.eg.db', \
+    'AnnotationDbi', 'biomaRt', 'GenomicAlignments', \
+    'Rsamtools', 'rtracklayer', 'VariantAnnotation' \
+))"
+
+# Install additional Bioconductor packages for various analyses
+RUN R -e "BiocManager::install(c( \
+    'enrichplot', 'pathview', 'ReactomePA', \
+    'fgsea', 'GSEABase', 'DOSE', \
+    'SingleCellExperiment', 'scater', 'scran', \
+    'Seurat', 'monocle3', 'destiny', \
+    'methylKit', 'ChIPseeker', 'DiffBind', \
+    'MAST', 'zinbwave', 'slingshot' \
+))"
+
+# Install additional useful packages for bioinformatics
+RUN R -e "install.packages(c( \
+    'ggsci', 'ggrepel', 'ggfortify', 'ggbeeswarm', \
+    'ggridges', 'ggdendro', 'ggalluvial', \
+    'performance', 'see', 'ggstatsplot', \
+    'tidymodels', 'caret', 'glmnet', \
+    'randomForest', 'xgboost', 'ranger', \
+    'network', 'igraph', 'tidygraph', 'ggraph', \
+    'lme4', 'nlme', 'emmeans', \
+    'vegan', 'ade4', 'phyloseq' \
+))"
+
+# Install IRkernel for Jupyter
+RUN R -e "IRkernel::installspec(user = FALSE)"
 
 # Configure Jupyter
 RUN mkdir -p /root/.jupyter \
