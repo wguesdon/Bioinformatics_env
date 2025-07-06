@@ -36,6 +36,24 @@ Default credentials (change in `.env` file for security):
 
 All packages have pinned versions for reproducibility. See `VERSIONS.md` for details.
 
+## Package Version Management
+
+For reproducible environments, all package versions are explicitly pinned:
+
+- **Python packages**: Defined in `pyproject.toml` and installed using `uv` (ultrafast Python package installer)
+  - Example: `numpy==1.26.2`, `pandas==2.1.4`, `jupyterlab==4.0.9`
+  - Python version is determined by the base Docker image
+  
+- **R packages**: Listed with versions in `r-packages.txt`
+  - Example: `tidyverse@2.0.0`, `DESeq2@1.42.0`, `Seurat@5.0.1`
+  - R version 4.4.2 is provided by the `rocker/verse:4.4.2` base image
+  - Bioconductor version 3.20 (compatible with R 4.4.2)
+
+To see all package versions or update them, check:
+- `pyproject.toml` for Python packages
+- `r-packages.txt` for R packages
+- `VERSIONS.md` for detailed version management documentation
+
 ## File Storage
 
 All your work is saved in the `workspace/` directory, which persists between container restarts.
