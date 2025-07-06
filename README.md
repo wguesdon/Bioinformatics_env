@@ -13,10 +13,17 @@ cd Bioinformatics_env
 docker-compose up --build -d
 ```
 
-2. **Access:**
-- **RStudio**: http://localhost:8787 (user: `rstudio`, password: set in RSTUDIO_PASSWORD)
-- **Jupyter Lab**: http://localhost:8888 (token: set in JUPYTER_TOKEN)
-- **VSCode**: http://localhost:8080
+2. **Access the tools:**
+
+| Tool | URL | Username | Password/Token |
+|------|-----|----------|----------------|
+| **RStudio** | http://localhost:8787 | `rstudio` | `rstudio` (or value in `.env`) |
+| **Jupyter Lab** | http://localhost:8888 | N/A | `jupyter` (or value in `.env`) |
+| **VSCode** | http://localhost:8080 | N/A | No authentication |
+
+Default credentials (change in `.env` file for security):
+- RStudio password: `rstudio`
+- Jupyter token: `jupyter`
 
 ## What's Included
 
