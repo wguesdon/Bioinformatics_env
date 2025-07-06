@@ -101,10 +101,12 @@ RUN mkdir -p /etc/rstudio \
     && echo "www-frame-origin=any" >> /etc/rstudio/rserver.conf \
     && echo "server-app-armor-enabled=0" >> /etc/rstudio/rserver.conf
 
-# Create rsession.conf to prevent crashes
+# Create rsession.conf to prevent crashes and set default directory
 RUN echo "session-timeout-minutes=0" > /etc/rstudio/rsession.conf \
     && echo "session-disconnected-timeout-minutes=0" >> /etc/rstudio/rsession.conf \
-    && echo "session-quit-child-processes-on-exit=0" >> /etc/rstudio/rsession.conf
+    && echo "session-quit-child-processes-on-exit=0" >> /etc/rstudio/rsession.conf \
+    && echo "session-default-working-dir=/workspace" >> /etc/rstudio/rsession.conf \
+    && echo "session-default-new-project-dir=/workspace" >> /etc/rstudio/rsession.conf
 
 # Set up RStudio user (already exists in rocker/verse)
 RUN usermod -s /bin/bash rstudio
