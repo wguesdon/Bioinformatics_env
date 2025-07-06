@@ -17,21 +17,16 @@ RUN apt-get update && apt-get install -y \
     gdebi-core \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and setuptools without touching wheel
-RUN pip3 install --upgrade --ignore-installed pip setuptools --break-system-packages
+# Install uv for fast Python package management
+# Using the standalone installer method
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="/usr/local/bin" sh
 
-# Install Python packages in stages to avoid conflicts
-RUN pip3 install --no-cache-dir --break-system-packages \
-    jupyter jupyterlab
+# Copy Python dependencies file
+COPY pyproject.toml /tmp/pyproject.toml
 
-RUN pip3 install --no-cache-dir --break-system-packages \
-    numpy pandas matplotlib seaborn scipy
-
-RUN pip3 install --no-cache-dir --break-system-packages \
-    scikit-learn plotly bokeh altair ipywidgets
-
-RUN pip3 install --no-cache-dir --break-system-packages \
-    rpy2
+# Check Python version and install packages using uv with the system Python
+RUN python3 --version && \
+    uv pip install --system --break-system-packages --python /usr/bin/python3 -r /tmp/pyproject.toml
 
 # Install Quarto
 RUN curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb \
@@ -41,9 +36,18 @@ RUN curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb \
 # Install VSCode Server
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-# Install base R packages including full tidyverse
+# Copy R packages list
+COPY r-packages.txt /tmp/r-packages.txt
+
+# Install specific version of BiocManager first
+RUN R -e "install.packages('BiocManager', version='1.30.22', repos='https://cran.r-project.org')"
+
+# Set Bioconductor version to 3.20 (compatible with R 4.4.2)
+RUN R -e "BiocManager::install(version='3.20', ask=FALSE, update=FALSE)"
+
+# Install base R packages with specific versions
 RUN R -e "install.packages(c( \
-    'BiocManager', 'IRkernel', 'reticulate', \
+    'IRkernel', 'reticulate', \
     'tidyverse', 'ggpubr', 'rstatix', 'FactoMineR', \
     'factoextra', 'corrplot', 'GGally', \
     'viridis', 'RColorBrewer', 'scales', \
@@ -52,7 +56,7 @@ RUN R -e "install.packages(c( \
     'survival', 'survminer', 'broom', \
     'knitr', 'rmarkdown', 'DT', 'plotly', \
     'pheatmap', 'VennDiagram', 'UpSetR' \
-))"
+), repos='https://cran.r-project.org')"
 
 # Install Bioconductor core packages
 RUN R -e "BiocManager::install(c( \
@@ -61,7 +65,7 @@ RUN R -e "BiocManager::install(c( \
     'clusterProfiler', 'org.Hs.eg.db', 'org.Mm.eg.db', \
     'AnnotationDbi', 'biomaRt', 'GenomicAlignments', \
     'Rsamtools', 'rtracklayer', 'VariantAnnotation' \
-))"
+), ask=FALSE, update=FALSE)"
 
 # Install additional Bioconductor packages for various analyses
 RUN R -e "BiocManager::install(c( \
@@ -71,7 +75,7 @@ RUN R -e "BiocManager::install(c( \
     'Seurat', 'monocle3', 'destiny', \
     'methylKit', 'ChIPseeker', 'DiffBind', \
     'MAST', 'zinbwave', 'slingshot' \
-))"
+), ask=FALSE, update=FALSE)"
 
 # Install additional useful packages for bioinformatics
 RUN R -e "install.packages(c( \
@@ -83,7 +87,7 @@ RUN R -e "install.packages(c( \
     'network', 'igraph', 'tidygraph', 'ggraph', \
     'lme4', 'nlme', 'emmeans', \
     'vegan', 'ade4', 'phyloseq' \
-))"
+), repos='https://cran.r-project.org')"
 
 # Install IRkernel for Jupyter
 RUN R -e "IRkernel::installspec(user = FALSE)"

@@ -34,6 +34,8 @@ Default credentials (change in `.env` file for security):
 - **VSCode** - Web-based code editor
 - **Quarto** - For presentations and reports
 
+All packages have pinned versions for reproducibility. See `VERSIONS.md` for details.
+
 ## File Storage
 
 All your work is saved in the `workspace/` directory, which persists between container restarts.

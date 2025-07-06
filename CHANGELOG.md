@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.4.0] - 2025-07-06
+
+### Added
+- **Package Version Pinning**: Implemented comprehensive version pinning for reproducibility
+  - Created `pyproject.toml` for Python dependencies with specific versions
+  - Created `r-packages.txt` documenting all R package versions
+  - Added `VERSIONS.md` documentation for version management
+  - Integrated `uv` package manager for faster Python installations
+  
+### Changed
+- **Python Package Management**: Switched from pip to uv for significant speed improvements
+  - Replaced multiple pip install commands with single uv install from pyproject.toml
+  - Added proper system Python configuration for uv
+- **Bioconductor Version**: Updated to version 3.20 (compatible with R 4.4.2)
+- **Docker Build Process**: Optimized build with version pinning and faster package installation
+
+### Improved
+- **Reproducibility**: All packages now have pinned versions ensuring consistent environments
+- **Build Speed**: Using uv reduces Python package installation time significantly
+- **Documentation**: Added comprehensive version management documentation
+
 ## [0.3.2] - 2025-07-06
 
 ### Fixed
