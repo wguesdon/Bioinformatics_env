@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.2] - 2025-07-06
+
+### Fixed
+- **RStudio Working Directory**: Fixed issue where RStudio was not showing the workspace directory
+  - Added `session-default-working-dir` configuration to `/etc/rstudio/rsession.conf`
+  - Enhanced `.Rprofile` to automatically set working directory to `/workspace`
+  - Created workspace symlink in RStudio home directory for easy navigation
+  - RStudio now properly displays and saves files in the `/workspace` directory
+
+## [0.3.1] - 2025-07-06
+
+### Fixed
+- **RStudio File Permissions**: Fixed issue where files created in RStudio were not accessible from the host system
+  - Updated `startup_proper.sh` to dynamically adjust RStudio user UID/GID to match host user
+  - Modified `docker-compose.yml` to use environment variables for USERID and GROUPID
+  - Added USERID and GROUPID variables to `.env` and `.env.example` files
+  - Files created in RStudio now have proper permissions matching the host user
+
 ## [0.3.0] - 2025-06-08
 
 ### Added
