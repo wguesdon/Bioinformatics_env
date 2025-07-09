@@ -18,8 +18,8 @@ services:
       - JUPYTER_TOKEN=${JUPYTER_TOKEN:-jupyter}
       - DISABLE_AUTH=${DISABLE_AUTH:-false}
       - USER=rstudio
-      - USERID=${USERID:-$(id -u)}
-      - GROUPID=${GROUPID:-$(id -g)}
+      - USERID=${USERID:-1000}
+      - GROUPID=${GROUPID:-1000}
     restart: unless-stopped
     stdin_open: true
     tty: true

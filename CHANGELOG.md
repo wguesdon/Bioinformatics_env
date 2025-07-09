@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.6.0] - 2025-07-09
+
+### Added
+- **Multi-OS Support**: Added experimental cross-platform support
+  - Platform-specific `.env` example files for Linux, macOS, and Windows
+  - Platform-specific setup instructions in README
+  - `.gitattributes` file to ensure consistent line endings across platforms
+  - Support for macOS including Apple Silicon (M1/M2/M3/M4)
+  - Support for Windows with Docker Desktop
+
+### Changed
+- **Docker Compose**: Updated USERID/GROUPID defaults to use fixed values instead of shell commands for better Windows compatibility
+- **Documentation**: Added platform information noting development on Ubuntu 24.04.2 LTS
+
+### Improved
+- **Cross-platform Compatibility**: Container now works on Linux, macOS, and Windows
+- **File Permissions**: Better handling across different operating systems
+
 ## [0.5.0] - 2025-07-09
 
 ### Added

@@ -2,6 +2,8 @@
 
 🧬 A Docker container for bioinformatics and data science with R/Bioconductor, Python, RStudio Server, Jupyter Lab, VSCode, and Quarto.
 
+> **Development Platform**: This container was developed and tested on Ubuntu 24.04.2 LTS. Cross-platform support for macOS (including Apple Silicon) and Windows is in progress and currently being tested.
+
 ## Quick Start
 
 ### On Your Server
@@ -24,6 +26,38 @@ docker-compose up --build -d
 Default credentials (change in `.env` file for security):
 - RStudio password: `rstudio`
 - Jupyter token: `jupyter`
+
+## Platform-Specific Setup
+
+### Linux
+```bash
+# Copy the Linux-specific environment file
+cp .env.example.linux .env
+# Get your user and group IDs
+echo "USERID=$(id -u)" >> .env
+echo "GROUPID=$(id -g)" >> .env
+```
+
+### macOS (including Apple Silicon M1/M2/M3/M4)
+```bash
+# Copy the macOS-specific environment file
+cp .env.example.macos .env
+# Get your user and group IDs (usually 501:20 on macOS)
+echo "USERID=$(id -u)" >> .env
+echo "GROUPID=$(id -g)" >> .env
+```
+
+### Windows
+```powershell
+# Copy the Windows-specific environment file
+copy .env.example.windows .env
+# No need to modify USERID/GROUPID - Docker Desktop handles permissions
+```
+
+**Note for Windows users**:
+- Ensure Docker Desktop is running
+- Use PowerShell or WSL2 for better compatibility
+- Line endings in scripts are LF (Unix-style)
 
 ## What's Included
 
