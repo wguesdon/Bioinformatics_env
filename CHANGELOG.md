@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.5.0] - 2025-07-09
+
+### Added
+- **Package Testing Framework**: Comprehensive testing suite for verifying package installations
+  - `test_python_packages.py`: Python package verification script
+  - `test_r_packages_flexible.R`: Flexible R package testing with configurable error tolerance
+  - `package_test_config.R`: Configuration file for R package testing
+  - `test_packages.sh`: Shell script to run all package tests
+  - Added test files to Docker build process for immediate verification
+
+### Changed
+- **R Package Installation**: Refactored to use dedicated installation script
+  - Moved from inline Dockerfile commands to `install_r_packages_v2.R`
+  - Improved error handling and package installation reliability
+  - Better support for version-specific installations
+- **R Package Versions**: Updated multiple packages to latest compatible versions
+  - BiocManager: 1.30.22 → 1.30.26
+  - data.table: 1.14.10 → 1.17.0
+  - knitr: 1.45 → 1.49
+  - rmarkdown: 2.25 → 2.29
+  - And many more Bioconductor packages updated to version 3.20 compatible releases
+- **Docker Build Process**: Streamlined package installation and added verification step
+  - Packages are now installed via script rather than inline commands
+  - Test files are copied to workspace and run during build
+  - Configuration files are preserved in workspace for post-build testing
+
+### Added Scripts
+- `install_r_packages_v2.R`: Dedicated R package installation script
+- `extract_installed_versions.sh`: Utility to extract installed package versions
+- `update_r_packages_versions.R`: Script to update package version information
+
 ## [0.4.0] - 2025-07-06
 
 ### Added

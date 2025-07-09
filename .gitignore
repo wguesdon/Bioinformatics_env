@@ -14,6 +14,9 @@ Thumbs.db
 .Rproj.user/
 .ipynb_checkpoints/
 
+# Claude files
+.claude
+
 # Data files (often large)
 *.csv
 *.xlsx

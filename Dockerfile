@@ -36,58 +36,26 @@ RUN curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb \
 # Install VSCode Server
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-# Copy R packages list
+# Copy R packages list and installation script
 COPY r-packages.txt /tmp/r-packages.txt
+COPY install_r_packages_v2.R /tmp/install_r_packages_v2.R
 
-# Install specific version of BiocManager first
-RUN R -e "install.packages('BiocManager', version='1.30.22', repos='https://cran.r-project.org')"
+# Install R packages with specific versions from r-packages.txt
+RUN Rscript /tmp/install_r_packages_v2.R
 
-# Set Bioconductor version to 3.20 (compatible with R 4.4.2)
-RUN R -e "BiocManager::install(version='3.20', ask=FALSE, update=FALSE)"
+# Copy test files to workspace
+COPY test_python_packages.py /workspace/test_python_packages.py
+COPY test_r_packages_flexible.R /workspace/test_r_packages_flexible.R
+COPY package_test_config.R /workspace/package_test_config.R
+COPY test_packages.sh /workspace/test_packages.sh
+RUN chmod +x /workspace/test_packages.sh
 
-# Install base R packages with specific versions
-RUN R -e "install.packages(c( \
-    'IRkernel', 'reticulate', \
-    'tidyverse', 'ggpubr', 'rstatix', 'FactoMineR', \
-    'factoextra', 'corrplot', 'GGally', \
-    'viridis', 'RColorBrewer', 'scales', \
-    'gridExtra', 'patchwork', 'cowplot', \
-    'data.table', 'janitor', 'skimr', \
-    'survival', 'survminer', 'broom', \
-    'knitr', 'rmarkdown', 'DT', 'plotly', \
-    'pheatmap', 'VennDiagram', 'UpSetR' \
-), repos='https://cran.r-project.org')"
+# Also copy config files to workspace for tests after build
+COPY pyproject.toml /workspace/pyproject.toml
+COPY r-packages.txt /workspace/r-packages.txt
 
-# Install Bioconductor core packages
-RUN R -e "BiocManager::install(c( \
-    'GenomicRanges', 'GenomicFeatures', 'Biostrings', \
-    'DESeq2', 'edgeR', 'limma', 'ComplexHeatmap', \
-    'clusterProfiler', 'org.Hs.eg.db', 'org.Mm.eg.db', \
-    'AnnotationDbi', 'biomaRt', 'GenomicAlignments', \
-    'Rsamtools', 'rtracklayer', 'VariantAnnotation' \
-), ask=FALSE, update=FALSE)"
-
-# Install additional Bioconductor packages for various analyses
-RUN R -e "BiocManager::install(c( \
-    'enrichplot', 'pathview', 'ReactomePA', \
-    'fgsea', 'GSEABase', 'DOSE', \
-    'SingleCellExperiment', 'scater', 'scran', \
-    'Seurat', 'monocle3', 'destiny', \
-    'methylKit', 'ChIPseeker', 'DiffBind', \
-    'MAST', 'zinbwave', 'slingshot' \
-), ask=FALSE, update=FALSE)"
-
-# Install additional useful packages for bioinformatics
-RUN R -e "install.packages(c( \
-    'ggsci', 'ggrepel', 'ggfortify', 'ggbeeswarm', \
-    'ggridges', 'ggdendro', 'ggalluvial', \
-    'performance', 'see', 'ggstatsplot', \
-    'tidymodels', 'caret', 'glmnet', \
-    'randomForest', 'xgboost', 'ranger', \
-    'network', 'igraph', 'tidygraph', 'ggraph', \
-    'lme4', 'nlme', 'emmeans', \
-    'vegan', 'ade4', 'phyloseq' \
-), repos='https://cran.r-project.org')"
+# Run package verification tests (using flexible R test)
+RUN cd /workspace && sed -i 's/test_r_packages.R/test_r_packages_flexible.R/g' test_packages.sh && ./test_packages.sh
 
 # Install IRkernel for Jupyter
 RUN R -e "IRkernel::installspec(user = FALSE)"
