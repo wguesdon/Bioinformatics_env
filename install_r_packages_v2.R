@@ -27,6 +27,17 @@ if(length(bioc_idx) > 0) {
 cat("Setting Bioconductor version to 3.20...\n")
 BiocManager::install(version = "3.20", ask = FALSE, update = FALSE)
 
+# Pre-install critical packages to avoid dependency cascade issues.
+# scales 1.4.0 is needed by newer packages but ggplot2 must stay at 3.5.x
+# for Bioconductor 3.20 compatibility (ggtree, enrichplot, etc.)
+cat("Pre-installing scales and pinning ggplot2 to prevent upgrade...\n")
+remotes_installed <- "remotes" %in% installed.packages()[,"Package"]
+if(!remotes_installed) install.packages("remotes", repos = "https://cran.r-project.org")
+remotes::install_version("scales", version = "1.4.0",
+                         repos = "https://cran.r-project.org", upgrade = "never")
+remotes::install_version("ggplot2", version = "3.5.1",
+                         repos = "https://cran.r-project.org", upgrade = "never")
+
 # List of known Bioconductor packages
 bioc_packages <- c("GenomicRanges", "GenomicFeatures", "Biostrings", "DESeq2", "edgeR", 
                    "limma", "ComplexHeatmap", "clusterProfiler", "org.Hs.eg.db", 
@@ -53,6 +64,9 @@ for(pkg_info in packages_info) {
 if(!"remotes" %in% installed.packages()[,"Package"]) {
   install.packages("remotes", repos = "https://cran.r-project.org")
 }
+
+# Track version mismatches
+version_warnings <- character(0)
 
 # Function to normalize version strings
 normalize_version <- function(version) {
@@ -94,21 +108,32 @@ for(pkg_info in cran_packages) {
         }
       }
       
-      # For CRAN packages, we'll install the latest version if exact version fails
-      # This is because many specified versions might not be available
       tryCatch({
-        remotes::install_version(pkg_name, version = pkg_version, 
+        remotes::install_version(pkg_name, version = pkg_version,
                                 repos = "https://cran.r-project.org",
                                 upgrade = "never")
       }, error = function(e) {
-        cat(sprintf("  Exact version %s not available, installing latest...\n", pkg_version))
+        cat(sprintf("  WARNING: Exact version %s not available for %s, installing latest\n", pkg_version, pkg_name))
         install.packages(pkg_name, repos = "https://cran.r-project.org")
+        installed_ver <- tryCatch(as.character(packageVersion(pkg_name)), error = function(e2) "unknown")
+        msg <- sprintf("%s: requested %s, installed %s", pkg_name, pkg_version, installed_ver)
+        version_warnings <<- c(version_warnings, msg)
       })
     }
     cat(sprintf("  Successfully installed %s\n", pkg_name))
   }, error = function(e) {
     cat(sprintf("  ERROR installing %s: %s\n", pkg_name, e$message))
   })
+}
+
+# Restore ggplot2 3.5.1 if it was upgraded during CRAN installs.
+# ggplot2 4.x breaks Bioconductor 3.20 packages like ggtree and enrichplot.
+current_ggplot2 <- tryCatch(as.character(packageVersion("ggplot2")), error = function(e) "unknown")
+if(current_ggplot2 != "3.5.1") {
+  cat(sprintf("Restoring ggplot2 3.5.1 (was upgraded to %s)...\n", current_ggplot2))
+  remotes::install_version("ggplot2", version = "3.5.1",
+                           repos = "https://cran.r-project.org",
+                           upgrade = "never", force = TRUE)
 }
 
 # Install Bioconductor packages
@@ -183,6 +208,17 @@ missing_pkgs <- setdiff(all_packages, installed_pkgs)
 if(length(missing_pkgs) > 0) {
   cat("WARNING: The following packages could not be installed:\n")
   cat(paste("  -", missing_pkgs), sep = "\n")
-} else {
-  cat("All packages successfully installed!\n")
+  cat("\n")
+}
+
+if(length(version_warnings) > 0) {
+  cat(sprintf("\nWARNING: %d package(s) installed with different versions than requested:\n", length(version_warnings)))
+  cat(paste("  -", version_warnings), sep = "\n")
+  cat("\nUpdate r-packages.txt to match the installed versions for reproducibility.\n")
+}
+
+if(length(missing_pkgs) == 0 && length(version_warnings) == 0) {
+  cat("All packages successfully installed with correct versions!\n")
+} else if(length(missing_pkgs) == 0) {
+  cat("\nAll packages installed (some with version differences).\n")
 }

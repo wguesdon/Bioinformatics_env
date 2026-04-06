@@ -1,6 +1,6 @@
 # Package Version Management
 
-This document describes how package versions are managed in the Bioinformatics Docker Environment for reproducibility.
+This document describes how package versions are managed in the Bioinformatics Container Environment for reproducibility.
 
 ## Overview
 
@@ -21,7 +21,7 @@ Key packages:
 
 To update Python packages:
 1. Edit `pyproject.toml` with new versions
-2. Rebuild the Docker image
+2. Rebuild the container image
 
 ## R Packages
 
@@ -39,7 +39,7 @@ Package versions are documented in `r-packages.txt` for reference.
 
 ### Testing New Versions
 1. Create a new branch
-2. Update versions in `pyproject.toml` or Dockerfile
+2. Update versions in `pyproject.toml` or Containerfile
 3. Build and test thoroughly
 4. Submit PR with test results
 

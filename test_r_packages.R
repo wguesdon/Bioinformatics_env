@@ -6,7 +6,7 @@ parse_r_packages <- function() {
   # Parse r-packages.txt and extract package requirements
   # Try multiple locations for r-packages.txt
   possible_paths <- c(
-    "/tmp/r-packages.txt",  # During Docker build
+    "/tmp/r-packages.txt",  # During container build
     "r-packages.txt",       # Current directory
     file.path(getwd(), "r-packages.txt")  # Working directory
   )

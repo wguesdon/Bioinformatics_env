@@ -12,7 +12,7 @@ def parse_pyproject():
     """Parse pyproject.toml and extract package requirements"""
     # Try multiple locations for pyproject.toml
     possible_paths = [
-        Path("/tmp/pyproject.toml"),  # During Docker build
+        Path("/tmp/pyproject.toml"),  # During container build
         Path(__file__).parent / "pyproject.toml",  # In workspace
         Path("pyproject.toml")  # Current directory
     ]

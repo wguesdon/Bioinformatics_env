@@ -1,11 +1,11 @@
 # Installation Guide
 
-This guide will help you deploy the DataScience Docker Environment on your Ubuntu server and access it from your laptop.
+This guide will help you deploy the Bioinformatics Container Environment on your Ubuntu server and access it from your laptop.
 
-## 📋 Prerequisites
+## Prerequisites
 
 ### Server Requirements
-- **OS**: Ubuntu 18.04+ (or other Docker-compatible Linux)
+- **OS**: Ubuntu 18.04+ (or other Linux distribution)
 - **RAM**: 4GB minimum, 8GB+ recommended
 - **Storage**: 20GB+ free space
 - **Network**: Accessible from your laptop
@@ -15,64 +15,57 @@ This guide will help you deploy the DataScience Docker Environment on your Ubunt
 - Modern web browser (Chrome, Firefox, Safari)
 - Network access to server
 
-## 🚀 Quick Installation (Recommended)
+## Quick Installation (Recommended)
 
-### Option 1: One-Line Install
+### Option 1: One Line Install
 ```bash
-curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/datascience-docker-env/main/scripts/deploy.sh | bash
+curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/Bioinformatics_env/main/deploy.sh | bash
 ```
 
 ### Option 2: Manual Installation
 ```bash
 # Clone repository
-git clone https://github.com/YOUR_USERNAME/datascience-docker-env.git
-cd datascience-docker-env
+git clone https://github.com/YOUR_USERNAME/Bioinformatics_env.git
+cd Bioinformatics_env
 
 # Run deployment script
-./scripts/deploy.sh
+./deploy.sh
 ```
 
-## 🔧 Detailed Installation Steps
+## Detailed Installation Steps
 
-### Step 1: Install Docker (if not already installed)
+### Step 1: Install Podman (if not already installed)
 
 ```bash
 # Update package index
 sudo apt update
 
-# Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-
-# Add your user to docker group
-sudo usermod -aG docker $USER
-
-# Log out and back in, or run:
-newgrp docker
+# Install Podman
+sudo apt install -y podman
 
 # Verify installation
-docker --version
+podman --version
 ```
 
-### Step 2: Install Docker Compose
+### Step 2: Install podman-compose
 
 ```bash
-# Download Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# Install podman-compose via pip (user level)
+pip install --user podman-compose
 
-# Make executable
-sudo chmod +x /usr/local/bin/docker-compose
+# Or using pipx
+pipx install podman-compose
 
 # Verify installation
-docker-compose --version
+podman-compose --version
 ```
 
 ### Step 3: Clone and Configure
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/datascience-docker-env.git
-cd datascience-docker-env
+git clone https://github.com/YOUR_USERNAME/Bioinformatics_env.git
+cd Bioinformatics_env
 
 # Create workspace directory
 mkdir -p workspace/{projects,data,notebooks,scripts,presentations}
@@ -98,10 +91,10 @@ sudo ufw allow 8080/tcp comment "VSCode Server"
 #### Development Deployment (No Authentication)
 ```bash
 # Build and start services
-docker-compose up --build -d
+podman-compose up --build -d
 
 # Check status
-docker-compose ps
+podman-compose ps
 ```
 
 #### Production Deployment (With Authentication)
@@ -109,11 +102,11 @@ docker-compose ps
 # Edit environment file with secure passwords
 nano .env
 
-# Deploy with production configuration
-docker-compose -f docker-compose.prod.yml up --build -d
+# Deploy
+podman-compose up --build -d
 ```
 
-## 🌐 Accessing from Your Laptop
+## Accessing from Your Laptop
 
 Once deployed on your server (IP: 192.168.2.140), open these URLs in your laptop browser:
 
@@ -121,7 +114,7 @@ Once deployed on your server (IP: 192.168.2.140), open these URLs in your laptop
 |---------|-----|-------------|
 | **RStudio Server** | `http://192.168.2.140:8787` | R IDE with Bioconductor |
 | **Jupyter Lab** | `http://192.168.2.140:8888` | Python/R notebooks |
-| **VSCode** | `http://192.168.2.140:8080` | Web-based code editor |
+| **VSCode** | `http://192.168.2.140:8080` | Web based code editor |
 
 ### Login Information
 
@@ -133,7 +126,7 @@ Once deployed on your server (IP: 192.168.2.140), open these URLs in your laptop
 **Production Mode:**
 - Passwords as configured in your `.env` file
 
-## 🔒 Security Configuration
+## Security Configuration
 
 ### For Local Network Use
 The default configuration is suitable for trusted local networks:
@@ -157,10 +150,10 @@ VSCODE_PASSWORD=your-secure-password
 
 Then deploy with:
 ```bash
-docker-compose -f docker-compose.prod.yml up --build -d
+podman-compose up --build -d
 ```
 
-## 📁 File Management
+## File Management
 
 ### Workspace Structure
 ```
@@ -177,39 +170,33 @@ workspace/
 - RStudio settings saved in `home/` directory
 - Jupyter settings and kernels preserved
 
-## 🛠️ Management Commands
+## Management Commands
 
 ### Daily Operations
 ```bash
 # View service status
-docker-compose ps
+podman-compose ps
 
 # View logs
-docker-compose logs -f
+podman-compose logs -f
 
 # Restart services
-docker-compose restart
+podman-compose restart
 
 # Stop services
-docker-compose down
+podman-compose down
 
 # Start services
-docker-compose up -d
+podman-compose up -d
 ```
 
 ### Maintenance
 ```bash
-# Update environment
-./scripts/update.sh
-
-# Backup workspace
-./scripts/backup.sh
-
 # Access container shell
-docker exec -it datascience-env bash
+podman exec -it bioinformatics-env bash
 ```
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Services Won't Start
 
@@ -218,9 +205,9 @@ docker exec -it datascience-env bash
 sudo netstat -tlnp | grep -E ':(8787|8888|8080)'
 ```
 
-2. **Check Docker status:**
+2. **Check container status:**
 ```bash
-docker-compose logs
+podman-compose logs
 ```
 
 3. **Verify firewall:**
@@ -243,9 +230,9 @@ telnet 192.168.2.140 8787
 sudo netstat -tlnp | grep -E ':(8787|8888|8080)'
 ```
 
-3. **Verify Docker port binding:**
+3. **Verify container port binding:**
 ```bash
-docker port datascience-env
+podman port bioinformatics-env
 ```
 
 ### Memory Issues
@@ -253,7 +240,7 @@ docker port datascience-env
 1. **Check available memory:**
 ```bash
 free -h
-docker stats
+podman stats
 ```
 
 2. **Increase swap if needed:**
@@ -271,46 +258,28 @@ sudo swapon /swapfile
 sudo chown -R $USER:$USER workspace/
 ```
 
-2. **Fix Docker permissions:**
+2. **Fix Podman permissions (rootless):**
+Podman runs rootless by default. If you encounter permission issues, check your subuid/subgid mappings:
 ```bash
-sudo usermod -aG docker $USER
-newgrp docker
+cat /etc/subuid
+cat /etc/subgid
 ```
 
-## 🔄 Regular Maintenance
+## Regular Maintenance
 
 ### Weekly
-- Check `docker-compose logs` for errors
-- Run `./scripts/backup.sh` to backup workspace
+- Check `podman-compose logs` for errors
 - Monitor disk space: `df -h`
 
 ### Monthly
-- Run `./scripts/update.sh` to update environment
-- Clean old Docker images: `docker system prune`
-- Review and update packages in Dockerfile if needed
+- Clean old container images: `podman system prune`
+- Review and update packages in Containerfile if needed
 
-### Backups
-```bash
-# Manual backup
-./scripts/backup.sh
-
-# Restore from backup
-tar -xzf backups/datascience_backup_YYYYMMDD_HHMMSS.tar.gz
-docker-compose down && docker-compose up -d
-```
-
-## 📞 Getting Help
-
-1. **Check documentation:** Review README.md and this guide
-2. **View logs:** `docker-compose logs -f`
-3. **GitHub issues:** Report problems on the repository
-4. **Community:** Check Docker and R/Python communities
-
-## ✅ Verification Checklist
+## Verification Checklist
 
 After installation, verify:
 
-- [ ] Docker and Docker Compose installed
+- [ ] Podman and podman-compose installed
 - [ ] Repository cloned and workspace created
 - [ ] Firewall configured (if applicable)
 - [ ] Containers built and running
@@ -322,14 +291,10 @@ After installation, verify:
 - [ ] Python packages import successfully
 - [ ] Quarto renders presentations
 
-## 🎯 Next Steps
+## Next Steps
 
-1. **Customize environment:** Add your favorite packages to Dockerfile
+1. **Customize environment:** Add your favorite packages to Containerfile
 2. **Set up projects:** Create project directories in workspace
 3. **Configure backups:** Set up automated backups
-4. **Explore integrations:** Use R-Python integration features
+4. **Explore integrations:** Use R Python integration features
 5. **Create presentations:** Start with Quarto examples
-
----
-
-🎉 **Congratulations!** Your DataScience Docker Environment is ready for productive data science work!

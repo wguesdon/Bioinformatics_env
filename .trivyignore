@@ -1,0 +1,7 @@
+# Accepted risks for this container
+
+# DS-0002: Container runs as root because RStudio Server requires root
+# to manage user sessions and set passwords via chpasswd.
+# The startup script (startup_proper.sh) handles permission separation:
+# RStudio sessions run as the 'rstudio' user.
+DS-0002

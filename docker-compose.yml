@@ -1,6 +1,8 @@
 services:
   bioinformatics:
-    build: .
+    build:
+      context: .
+      dockerfile: Containerfile
     container_name: bioinformatics-env
     ports:
       - "8787:8787"  # RStudio Server
@@ -24,12 +26,6 @@ services:
     stdin_open: true
     tty: true
     shm_size: '2gb'
-    deploy:
-      resources:
-        limits:
-          memory: ${MEMORY_LIMIT:-45G}
-        reservations:
-          memory: ${MEMORY_RESERVATION:-16G}
     init: true
 
 volumes:

@@ -1,8 +1,8 @@
 # Bioinformatics Environment
 
-🧬 A Docker container for bioinformatics and data science with R/Bioconductor, Python, RStudio Server, Jupyter Lab, VSCode, and Quarto.
+A container for bioinformatics and data science with R/Bioconductor, Python, RStudio Server, Jupyter Lab, VSCode, and Quarto.
 
-> **Development Platform**: This container was developed and tested on Ubuntu 24.04.2 LTS. Cross-platform support for macOS (including Apple Silicon) and Windows is in progress and currently being tested.
+> **Development Platform**: This container was developed and tested on Ubuntu 24.04.2 LTS. Cross platform support for macOS (including Apple Silicon) and Windows is in progress and currently being tested.
 
 ## Quick Start
 
@@ -12,7 +12,7 @@
 ```bash
 git clone https://github.com/wguesdon/Bioinformatics_env.git
 cd Bioinformatics_env
-docker-compose up --build -d
+podman-compose up --build -d
 ```
 
 2. **Access the tools:**
@@ -27,7 +27,7 @@ Default credentials (change in `.env` file for security):
 - RStudio password: `rstudio`
 - Jupyter token: `jupyter`
 
-## Platform-Specific Setup
+## Platform Specific Setup
 
 ### Linux
 ```bash
@@ -51,22 +51,39 @@ echo "GROUPID=$(id -g)" >> .env
 ```powershell
 # Copy the Windows-specific environment file
 copy .env.example.windows .env
-# No need to modify USERID/GROUPID - Docker Desktop handles permissions
+# No need to modify USERID/GROUPID - Podman handles permissions
 ```
 
 **Note for Windows users**:
-- Ensure Docker Desktop is running
+- Ensure Podman is running
 - Use PowerShell or WSL2 for better compatibility
-- Line endings in scripts are LF (Unix-style)
+- Line endings in scripts are LF (Unix style)
 
 ## What's Included
 
-- **R 4.4.2** with Bioconductor packages (DESeq2, edgeR, GenomicRanges, etc.)
-- **Python 3** with data science stack (pandas, numpy, scikit-learn, etc.)
+### R (120+ packages)
+- **R 4.4.2** with Bioconductor 3.20
+- RNA-seq: DESeq2, edgeR, limma
+- Single cell: Seurat 5.3, scater, scran, MAST, slingshot
+- Genomics: GenomicRanges, Biostrings, Rsamtools, rtracklayer, VariantAnnotation
+- Enrichment: clusterProfiler, enrichplot, fgsea, ReactomePA, pathview
+- Epigenomics: ChIPseeker, DiffBind, methylKit
+- Visualization: ComplexHeatmap, ggplot2, plotly, pheatmap
+- Modeling: tidymodels, caret, glmnet, xgboost, randomForest
+
+### Python
+- **Python 3.12** with bioinformatics and data science stack
+- Bioinformatics: biopython, pysam, anndata, scanpy, pyranges
+- Scientific computing: numpy, pandas, scipy, statsmodels, scikit-learn
+- Visualization: matplotlib, seaborn, plotly, bokeh, altair
+- Data formats: h5py (HDF5 support)
+- R integration: rpy2
+
+### Development Tools
 - **RStudio Server** - Full R IDE
-- **Jupyter Lab** - Python/R notebooks
-- **VSCode** - Web-based code editor
-- **Quarto** - For presentations and reports
+- **Jupyter Lab** - Python/R notebooks with IRkernel
+- **VSCode** (code-server 4.114.0) - Web based code editor
+- **Quarto** (1.9.36, checksum verified) - For presentations and reports
 
 All packages have pinned versions for reproducibility. See `VERSIONS.md` for details.
 
@@ -74,14 +91,16 @@ All packages have pinned versions for reproducibility. See `VERSIONS.md` for det
 
 For reproducible environments, all package versions are explicitly pinned:
 
-- **Python packages**: Defined in `pyproject.toml` and installed using `uv` (ultrafast Python package installer)
-  - Example: `numpy==1.26.2`, `pandas==2.1.4`, `jupyterlab==4.0.9`
-  - Python version is determined by the base Docker image
+- **Python packages**: Defined in `pyproject.toml` and installed using `uv`
+  - Example: `numpy==1.26.2`, `pandas==2.1.4`, `scanpy==1.10.4`
+  - Python 3.12 is provided by the base container image
   
 - **R packages**: Listed with versions in `r-packages.txt`
-  - Example: `tidyverse@2.0.0`, `DESeq2@1.42.0`, `Seurat@5.0.1`
-  - R version 4.4.2 is provided by the `rocker/verse:4.4.2` base image
+  - Example: `tidyverse@2.0.0`, `DESeq2@1.46.0`, `Seurat@5.3.0`
+  - R 4.4.2 via `rocker/verse:4.4.2` base image
   - Bioconductor version 3.20 (compatible with R 4.4.2)
+
+- **Tools**: Quarto and code-server are pinned with checksum verification in the Containerfile
 
 To see all package versions or update them, check:
 - `pyproject.toml` for Python packages
@@ -103,8 +122,8 @@ cd Bioinformatics_env
 mkdir -p workspace/{projects,data,notebooks,scripts,presentations}
 
 # 3. Build and start
-docker-compose build
-docker-compose up -d
+podman-compose build
+podman-compose up -d
 
 # 4. Verify (optional)
 chmod +x verify_setup.sh
@@ -115,16 +134,16 @@ chmod +x verify_setup.sh
 
 ```bash
 # Stop services
-docker-compose down
+podman-compose down
 
 # Start services  
-docker-compose up -d
+podman-compose up -d
 
 # View logs
-docker-compose logs -f
+podman-compose logs -f
 
 # Update
-git pull && docker-compose up --build -d
+git pull && podman-compose up --build -d
 ```
 
 ## Firewall Setup (Ubuntu)
@@ -151,20 +170,24 @@ Required environment variables:
 
 After setting up the .env file:
 ```bash
-docker-compose up --build -d
+podman-compose up --build -d
 ```
 
 ## Repository Structure
 
 ```bash
-bioinformatics-docker/
-├── Dockerfile              # Docker image definition
-├── docker-compose.yml      # Service configuration
+bioinformatics-env/
+├── Containerfile           # Container image definition
+├── docker-compose.yml      # Service configuration (podman-compose compatible)
+├── pyproject.toml          # Python package versions
+├── r-packages.txt          # R package versions
+├── install_r_packages_v2.R # R package installation script
 ├── startup_proper.sh       # Container startup script
 ├── README.md               # Project documentation
 ├── QUICK_REFERENCE.md      # Quick reference guide
 ├── CHANGELOG.md            # Version history
 ├── Installation_guide.md   # Detailed setup instructions
+├── VERSIONS.md             # Version management docs
 ├── verify_setup.sh         # Setup verification script
 ├── debug-rstudio.sh        # RStudio debugging tool
 ├── deploy.sh               # Deployment script

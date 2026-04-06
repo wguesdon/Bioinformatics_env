@@ -1,55 +1,55 @@
-# Quick Reference - Bioinformatics Docker Environment
+# Quick Reference - Bioinformatics Container Environment
 
-## 🚀 Access URLs
+## Access URLs
 - **RStudio**:  http://localhost:8787 (user: rstudio, password: set in RSTUDIO_PASSWORD)
 - **Jupyter**:  http://localhost:8888 (token: set in JUPYTER_TOKEN)
 - **VSCode**:   http://localhost:8080
 
-## 📝 Common Commands
+## Common Commands
 
 ### Container Management
 ```bash
 # Start services
-docker-compose up -d
+podman-compose up -d
 
 # Stop services
-docker-compose down
+podman-compose down
 
 # Restart services
-docker-compose restart
+podman-compose restart
 
 # View status
-docker-compose ps
+podman-compose ps
 
 # View logs
-docker-compose logs -f
+podman-compose logs -f
 ```
 
 ### Working Inside Container
 ```bash
 # Enter container shell
-docker exec -it bioinformatics-env bash
+podman exec -it bioinformatics-env bash
 
 # Run R command
-docker exec bioinformatics-env R -e "print('Hello')"
+podman exec bioinformatics-env R -e "print('Hello')"
 
 # Run Python command
-docker exec bioinformatics-env python3 -c "print('Hello')"
+podman exec bioinformatics-env python3 -c "print('Hello')"
 
 # Install R package (temporary)
-docker exec bioinformatics-env R -e "install.packages('newpackage')"
+podman exec bioinformatics-env R -e "install.packages('newpackage')"
 
 # Install Python package (temporary)
-docker exec bioinformatics-env pip3 install newpackage
+podman exec bioinformatics-env pip3 install newpackage
 ```
 
 ### File Operations
 ```bash
 # Copy file into container
-docker cp myfile.csv bioinformatics-env:/workspace/data/
+podman cp myfile.csv bioinformatics-env:/workspace/data/
 
 # Copy file from container
-docker cp bioinformatics-env:/workspace/results.csv ./
+podman cp bioinformatics-env:/workspace/results.csv ./
 
 # Backup workspace
 tar -czf workspace_backup_$(date +%Y%m%d).tar.gz workspace/
@@ -58,33 +58,33 @@ tar -czf workspace_backup_$(date +%Y%m%d).tar.gz workspace/
 ### Troubleshooting
 ```bash
 # Check service logs
-docker logs bioinformatics-env
+podman logs bioinformatics-env
 
 # Check RStudio logs specifically
-docker exec bioinformatics-env cat /var/log/rstudio-server/rserver.log
+podman exec bioinformatics-env cat /var/log/rstudio-server/rserver.log
 
 # Fix permissions (if needed)
-docker exec bioinformatics-env chown -R rstudio:rstudio /home/rstudio
+podman exec bioinformatics-env chown -R rstudio:rstudio /home/rstudio
 
 # Restart RStudio Server
-docker exec bioinformatics-env pkill rserver
-docker exec bioinformatics-env /usr/lib/rstudio-server/bin/rserver --server-daemonize=0 --server-app-armor-enabled=0 &
+podman exec bioinformatics-env pkill rserver
+podman exec bioinformatics-env /usr/lib/rstudio-server/bin/rserver --server-daemonize=0 --server-app-armor-enabled=0 &
 ```
 
 ### Updates and Maintenance
 ```bash
 # Update container with latest packages
-docker-compose build --no-cache
-docker-compose up -d
+podman-compose build --no-cache
+podman-compose up -d
 
-# Clean up Docker resources
-docker system prune -a  # Warning: removes all unused images
+# Clean up container resources
+podman system prune -a  # Warning: removes all unused images
 
 # Check resource usage
-docker stats bioinformatics-env
+podman stats bioinformatics-env
 ```
 
-## 🔧 Configuration Changes
+## Configuration Changes
 
 ### Environment Variables
 Edit `.env` file:
@@ -95,34 +95,28 @@ DISABLE_AUTH=false  # Set to true to disable authentication
 ```
 
 ### Add R Package Permanently
-Edit `Dockerfile`:
+Edit `Containerfile`:
 ```dockerfile
 RUN R -e "install.packages('package-name')"
 ```
 
 ### Add Python Package Permanently
-Edit `Dockerfile`:
+Edit `Containerfile`:
 ```dockerfile
 RUN pip3 install --no-cache-dir --break-system-packages package-name
 ```
 
 ### Change Memory Limits
-Edit `docker-compose.yml`:
-```yaml
-deploy:
-  resources:
-    limits:
-      memory: 32G  # Your limit
-```
+Memory limits can be set via environment variables or podman run flags.
 
 After any configuration change:
 ```bash
-docker-compose build
-docker-compose up -d
+podman-compose build
+podman-compose up -d
 ```
 
-## 💡 Tips
-- Save work frequently - containers can be rebuilt
+## Tips
+- Save work frequently. Containers can be rebuilt.
 - Use git for version control inside `/workspace/projects/`
 - Export important results outside the container
 - Regular backups of `/workspace/` are recommended

@@ -1,4 +1,4 @@
-# Bioinformatics Docker Environment
+# Bioinformatics Container Environment
 # R/Bioconductor + Python + RStudio + Jupyter + VSCode + Quarto
 
 FROM rocker/verse:4.4.2
@@ -6,7 +6,7 @@ FROM rocker/verse:4.4.2
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl wget git vim \
     python3 python3-pip python3-dev python3-venv \
     build-essential \
@@ -28,13 +28,20 @@ COPY pyproject.toml /tmp/pyproject.toml
 RUN python3 --version && \
     uv pip install --system --break-system-packages --python /usr/bin/python3 -r /tmp/pyproject.toml
 
-# Install Quarto
-RUN curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb \
-    && dpkg -i quarto-linux-amd64.deb \
-    && rm quarto-linux-amd64.deb
+# Install Quarto (pinned version with checksum verification)
+ENV QUARTO_VERSION=1.9.36
+RUN curl -L "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb" \
+    -o /tmp/quarto.deb \
+    && echo "8c47762e78fe58642246a94d18f67eb332c1778b711e5bef991ef3c15490d83a /tmp/quarto.deb" | sha256sum -c - \
+    && dpkg -i /tmp/quarto.deb \
+    && rm /tmp/quarto.deb
 
-# Install VSCode Server
-RUN curl -fsSL https://code-server.dev/install.sh | sh
+# Install VSCode Server (pinned version)
+ENV CODE_SERVER_VERSION=4.114.0
+RUN curl -fsSL "https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb" \
+    -o /tmp/code-server.deb \
+    && dpkg -i /tmp/code-server.deb \
+    && rm /tmp/code-server.deb
 
 # Copy R packages list and installation script
 COPY r-packages.txt /tmp/r-packages.txt

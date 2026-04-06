@@ -132,9 +132,9 @@ code-server \
 echo ""
 echo "All services started!"
 echo "================================="
-echo "RStudio: http://localhost:8787 (username: rstudio, password: rstudio)"
-echo "Jupyter: http://localhost:8888"
-echo "VSCode: http://localhost:8080"
+echo "RStudio: http://localhost:8787 (username: rstudio, password: set via RSTUDIO_PASSWORD)"
+echo "Jupyter: http://localhost:8888 (token: set via JUPYTER_TOKEN)"
+echo "VSCode:  http://localhost:8080"
 echo "================================="
 
 # Keep container running

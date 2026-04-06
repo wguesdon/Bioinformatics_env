@@ -8,7 +8,7 @@
   - Platform-specific setup instructions in README
   - `.gitattributes` file to ensure consistent line endings across platforms
   - Support for macOS including Apple Silicon (M1/M2/M3/M4)
-  - Support for Windows with Docker Desktop
+  - Support for Windows
 
 ### Changed
 - **Docker Compose**: Updated USERID/GROUPID defaults to use fixed values instead of shell commands for better Windows compatibility

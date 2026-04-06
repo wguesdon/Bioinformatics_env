@@ -7,7 +7,7 @@
 *.py text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
-Dockerfile text eol=lf
+Containerfile text eol=lf
 
 # Binary files
 *.png binary
