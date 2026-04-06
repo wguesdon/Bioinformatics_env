@@ -36,8 +36,6 @@ podman run -d --restart unless-stopped --name bioinformatics-env \
   bioinformatics-env
 ```
 
-If a port is already in use, map to a different host port (e.g. `-p 9888:8888` for Jupyter on port 9888).
-
 ### Access the tools
 
 | Tool | URL | Username | Password/Token |
