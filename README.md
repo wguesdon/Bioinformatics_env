@@ -46,29 +46,55 @@ podman run -d --restart unless-stopped --name bioinformatics-env \
 
 To access from another machine on the network, replace `localhost` with the server IP (e.g. `http://192.168.x.x:8787`).
 
+## Prerequisites
+
+### Linux
+```bash
+# Install Podman
+sudo apt install -y podman
+
+# Install podman-compose (using uv, recommended)
+uv tool install podman-compose
+
+# Or with pip
+pip install --user podman-compose
+```
+
+### macOS
+```bash
+# Install Podman
+brew install podman
+podman machine init && podman machine start
+
+# Install podman-compose
+uv tool install podman-compose
+```
+
+### Windows
+```powershell
+# Install Podman Desktop from https://podman-desktop.io
+# Then install podman-compose
+pip install podman-compose
+```
+
 ## Platform Specific Setup
 
 ### Linux
 ```bash
-# Copy the Linux-specific environment file
 cp .env.example.linux .env
-# Get your user and group IDs
 echo "USERID=$(id -u)" >> .env
 echo "GROUPID=$(id -g)" >> .env
 ```
 
 ### macOS (including Apple Silicon M1/M2/M3/M4)
 ```bash
-# Copy the macOS-specific environment file
 cp .env.example.macos .env
-# Get your user and group IDs (usually 501:20 on macOS)
 echo "USERID=$(id -u)" >> .env
 echo "GROUPID=$(id -g)" >> .env
 ```
 
 ### Windows
 ```powershell
-# Copy the Windows-specific environment file
 copy .env.example.windows .env
 # No need to modify USERID/GROUPID - Podman handles permissions
 ```
