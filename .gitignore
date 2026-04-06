@@ -17,6 +17,9 @@ Thumbs.db
 # Claude files
 .claude
 
+# Personal notes
+notes/
+
 # Data files (often large)
 *.csv
 *.xlsx
