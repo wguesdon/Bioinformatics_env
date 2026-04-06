@@ -40,8 +40,8 @@ podman run -d --restart unless-stopped --name bioinformatics-env \
 
 | Tool | URL | Username | Password/Token |
 |------|-----|----------|----------------|
-| **RStudio** | http://localhost:8787 | `rstudio` | value of `RSTUDIO_PASSWORD` |
-| **Jupyter Lab** | http://localhost:8888 | N/A | value of `JUPYTER_TOKEN` |
+| **RStudio** | http://localhost:8787 | `rstudio` | `Bioinfo2026` (or value in `.env`) |
+| **Jupyter Lab** | http://localhost:8888 | N/A | `Bioinfo2026` (or value in `.env`) |
 | **VSCode** | http://localhost:8080 | N/A | No authentication |
 
 To access from another machine on the network, replace `localhost` with the server IP (e.g. `http://192.168.x.x:8787`).

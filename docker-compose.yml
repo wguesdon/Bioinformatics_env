@@ -16,8 +16,8 @@ services:
       - rstudio-config:/home/rstudio/.config
       - rstudio-lib:/var/lib/rstudio-server
     environment:
-      - RSTUDIO_PASSWORD=${RSTUDIO_PASSWORD:-rstudio}
-      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-jupyter}
+      - RSTUDIO_PASSWORD=${RSTUDIO_PASSWORD:-Bioinfo2026}
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-Bioinfo2026}
       - DISABLE_AUTH=${DISABLE_AUTH:-false}
       - USER=rstudio
       - USERID=${USERID:-1000}
