@@ -8,24 +8,45 @@ A container for bioinformatics and data science with R/Bioconductor, Python, RSt
 
 ### On Your Server
 
-1. **Clone and deploy:**
+#### Option 1: Using podman-compose
+
 ```bash
 git clone https://github.com/wguesdon/Bioinformatics_env.git
 cd Bioinformatics_env
+cp .env.example .env   # Edit .env to set passwords
 podman-compose up --build -d
 ```
 
-2. **Access the tools:**
+#### Option 2: Using podman run
+
+```bash
+# Build the image
+podman build -f Containerfile -t bioinformatics-env .
+
+# Run the container
+podman run -d --restart unless-stopped --name bioinformatics-env \
+  -p 8787:8787 -p 8888:8888 -p 8080:8080 \
+  -v ./workspace:/workspace \
+  -e RSTUDIO_PASSWORD=your_password \
+  -e JUPYTER_TOKEN=your_token \
+  -e USERID=$(id -u) \
+  -e GROUPID=$(id -g) \
+  --shm-size=2g \
+  --init \
+  bioinformatics-env
+```
+
+If a port is already in use, map to a different host port (e.g. `-p 9888:8888` for Jupyter on port 9888).
+
+### Access the tools
 
 | Tool | URL | Username | Password/Token |
 |------|-----|----------|----------------|
-| **RStudio** | http://localhost:8787 | `rstudio` | `rstudio` (or value in `.env`) |
-| **Jupyter Lab** | http://localhost:8888 | N/A | `jupyter` (or value in `.env`) |
+| **RStudio** | http://localhost:8787 | `rstudio` | value of `RSTUDIO_PASSWORD` |
+| **Jupyter Lab** | http://localhost:8888 | N/A | value of `JUPYTER_TOKEN` |
 | **VSCode** | http://localhost:8080 | N/A | No authentication |
 
-Default credentials (change in `.env` file for security):
-- RStudio password: `rstudio`
-- Jupyter token: `jupyter`
+To access from another machine on the network, replace `localhost` with the server IP (e.g. `http://192.168.x.x:8787`).
 
 ## Platform Specific Setup
 
