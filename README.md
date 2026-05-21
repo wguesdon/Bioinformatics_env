@@ -60,15 +60,39 @@ uv tool install podman-compose
 pip install --user podman-compose
 ```
 
-### macOS
-```bash
-# Install Podman
-brew install podman
-podman machine init && podman machine start
+### macOS (Apple Silicon)
 
-# Install podman-compose
+The image is built for `linux/amd64` — the `rocker/verse` base image and the
+Quarto / code-server `.deb` packages are amd64-only. On Apple Silicon it runs
+under emulation, which **requires Rosetta**: Podman's default QEMU emulation
+crashes the `uv` binary mid-build (`qemu: uncaught target signal 11`).
+
+```bash
+# 1. Install Podman and Rosetta
+brew install podman
+softwareupdate --install-rosetta --agree-to-license
+
+# 2. Create the Podman machine with enough resources for the R build.
+#    The 2 GiB default is too small to compile 120+ R packages.
+podman machine init --cpus 8 --memory 12288 --disk-size 100
+podman machine start
+
+# 3. Enable Rosetta inside the VM. Recent Podman machine images ship with
+#    Rosetta gated off, so create the marker file to turn it on.
+podman machine ssh 'sudo touch /etc/containers/enable-rosetta \
+  && sudo systemctl restart systemd-binfmt.service \
+  && sudo systemctl start rosetta-activation.service'
+
+# 4. Verify Rosetta (not QEMU) is registered for x86-64 — this should print "rosetta"
+podman machine ssh 'ls /proc/sys/fs/binfmt_misc/ | grep rosetta'
+
+# 5. Install podman-compose
 uv tool install podman-compose
 ```
+
+If step 4 prints nothing, the build will fall back to QEMU and fail at the
+`uv pip install` step. The `enable-rosetta` marker persists across
+`podman machine stop`/`start`, but must be recreated if you `podman machine rm`.
 
 ### Windows
 ```powershell

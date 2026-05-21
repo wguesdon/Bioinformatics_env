@@ -2,6 +2,11 @@
 
 # Improved script to install R packages with specific versions from r-packages.txt
 
+# Raise the download timeout: some Bioconductor annotation packages are large
+# (e.g. reactome.db is ~455 MB) and exceed the default timeout on slower or
+# emulated network paths, which cascades into dependent package failures.
+options(timeout = 3600)
+
 # Read the packages file
 packages_file <- "/tmp/r-packages.txt"
 lines <- readLines(packages_file)
@@ -28,14 +33,15 @@ cat("Setting Bioconductor version to 3.20...\n")
 BiocManager::install(version = "3.20", ask = FALSE, update = FALSE)
 
 # Pre-install critical packages to avoid dependency cascade issues.
-# scales 1.4.0 is needed by newer packages but ggplot2 must stay at 3.5.x
-# for Bioconductor 3.20 compatibility (ggtree, enrichplot, etc.)
+# scales 1.4.0 is needed by newer packages but ggplot2 must stay on the 3.5.x
+# series for Bioconductor 3.20 compatibility (ggtree, enrichplot, etc.).
+# 3.5.2 (not 3.5.1) is required so the tidymodels ecosystem can load.
 cat("Pre-installing scales and pinning ggplot2 to prevent upgrade...\n")
 remotes_installed <- "remotes" %in% installed.packages()[,"Package"]
 if(!remotes_installed) install.packages("remotes", repos = "https://cran.r-project.org")
 remotes::install_version("scales", version = "1.4.0",
                          repos = "https://cran.r-project.org", upgrade = "never")
-remotes::install_version("ggplot2", version = "3.5.1",
+remotes::install_version("ggplot2", version = "3.5.2",
                          repos = "https://cran.r-project.org", upgrade = "never")
 
 # List of known Bioconductor packages
@@ -126,12 +132,13 @@ for(pkg_info in cran_packages) {
   })
 }
 
-# Restore ggplot2 3.5.1 if it was upgraded during CRAN installs.
-# ggplot2 4.x breaks Bioconductor 3.20 packages like ggtree and enrichplot.
+# Restore ggplot2 3.5.2 if it was upgraded during CRAN installs.
+# ggplot2 4.x breaks Bioconductor 3.20 packages like ggtree and enrichplot,
+# while tidymodels requires ggplot2 >= 3.5.2, so the 3.5.2 pin is the sweet spot.
 current_ggplot2 <- tryCatch(as.character(packageVersion("ggplot2")), error = function(e) "unknown")
-if(current_ggplot2 != "3.5.1") {
-  cat(sprintf("Restoring ggplot2 3.5.1 (was upgraded to %s)...\n", current_ggplot2))
-  remotes::install_version("ggplot2", version = "3.5.1",
+if(current_ggplot2 != "3.5.2") {
+  cat(sprintf("Restoring ggplot2 3.5.2 (was %s)...\n", current_ggplot2))
+  remotes::install_version("ggplot2", version = "3.5.2",
                            repos = "https://cran.r-project.org",
                            upgrade = "never", force = TRUE)
 }

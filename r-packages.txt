@@ -9,7 +9,7 @@ reticulate@1.34.0
 
 # Tidyverse and visualization
 tidyverse@2.0.0
-ggplot2@3.5.1
+ggplot2@3.5.2
 ggpubr@0.6.0
 rstatix@0.7.2
 FactoMineR@2.9
@@ -34,6 +34,12 @@ survminer@0.5.2
 broom@1.0.5
 
 # Reporting
+# xfun must be pinned and installed before knitr/rmarkdown: the rocker/verse
+# base image ships an older xfun, and install_version() uses upgrade="never",
+# so without this pin knitr 1.49 / rmarkdown 2.29 fail to load
+# ("object 'attr' is not exported by 'namespace:xfun'"), which cascades into
+# GauPro -> tune -> workflowsets -> tidymodels install failures.
+xfun@0.49
 knitr@1.49
 rmarkdown@2.29
 DT@0.31

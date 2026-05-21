@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Containerfile
+    # rocker/verse base image is amd64-only; pin platform so it builds/runs
+    # under emulation on Apple Silicon (arm64) Macs.
+    platform: linux/amd64
     container_name: bioinformatics-env
     ports:
       - "8787:8787"  # RStudio Server
