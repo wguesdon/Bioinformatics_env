@@ -2,7 +2,7 @@
 
 A container for bioinformatics and data science with R/Bioconductor, Python, RStudio Server, Jupyter Lab, VSCode, and Quarto.
 
-> **Development Platform**: This container was developed and tested on Ubuntu 24.04.2 LTS. Cross platform support for macOS (including Apple Silicon) and Windows is in progress and currently being tested.
+> **Tested platforms**: This container was developed on Ubuntu 24.04.2 LTS and has been tested on Ubuntu 24.04 and macOS (Apple Silicon). Windows support is in progress and currently being tested.
 
 ## Quick Start
 
