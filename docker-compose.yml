@@ -19,8 +19,9 @@ services:
       - rstudio-config:/home/rstudio/.config
       - rstudio-lib:/var/lib/rstudio-server
     environment:
-      - RSTUDIO_PASSWORD=${RSTUDIO_PASSWORD:-Bioinfo2026}
-      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-Bioinfo2026}
+      # No default. Set both in .env; deploy.sh refuses to start if either is empty.
+      - RSTUDIO_PASSWORD=${RSTUDIO_PASSWORD}
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN}
       - DISABLE_AUTH=${DISABLE_AUTH:-false}
       - USER=rstudio
       - USERID=${USERID:-1000}

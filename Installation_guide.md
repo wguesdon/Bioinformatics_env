@@ -108,13 +108,13 @@ podman-compose up --build -d
 
 ## Accessing from Your Laptop
 
-Once deployed on your server (IP: 192.168.2.140), open these URLs in your laptop browser:
+Once deployed on your server (IP: <YOUR_SERVER_IP>), open these URLs in your laptop browser:
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| **RStudio Server** | `http://192.168.2.140:8787` | R IDE with Bioconductor |
-| **Jupyter Lab** | `http://192.168.2.140:8888` | Python/R notebooks |
-| **VSCode** | `http://192.168.2.140:8080` | Web based code editor |
+| **RStudio Server** | `http://<YOUR_SERVER_IP>:8787` | R IDE with Bioconductor |
+| **Jupyter Lab** | `http://<YOUR_SERVER_IP>:8888` | Python/R notebooks |
+| **VSCode** | `http://<YOUR_SERVER_IP>:8080` | Web based code editor |
 
 ### Login Information
 
@@ -220,8 +220,8 @@ sudo ufw status verbose
 1. **Test server connectivity:**
 ```bash
 # From laptop
-ping 192.168.2.140
-telnet 192.168.2.140 8787
+ping <YOUR_SERVER_IP>
+telnet <YOUR_SERVER_IP> 8787
 ```
 
 2. **Check if services are listening:**

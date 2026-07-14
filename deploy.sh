@@ -3,6 +3,23 @@
 
 echo "Deploying Bioinformatics Environment..."
 
+# Refuse to start with no credentials. podman-compose does not honour the
+# ${VAR:?msg} form, so the check has to happen here.
+if [ -f .env ]; then
+    set -a
+    . ./.env
+    set +a
+fi
+for var in RSTUDIO_PASSWORD JUPYTER_TOKEN; do
+    if [ -z "${!var}" ]; then
+        echo "ERROR: $var is not set."
+        echo "Copy .env.example to .env and set a value:"
+        echo "  RSTUDIO_PASSWORD=\$(openssl rand -base64 24)"
+        echo "  JUPYTER_TOKEN=\$(openssl rand -hex 24)"
+        exit 1
+    fi
+done
+
 # Create workspace if it doesn't exist
 mkdir -p workspace
 
